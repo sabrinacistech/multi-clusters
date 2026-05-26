@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: cluster-status-service
+
+cluster:
+  data-center: default
+  active: true
+  polling-interval-seconds: 30
