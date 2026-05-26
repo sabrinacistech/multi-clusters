@@ -31,7 +31,7 @@ public class ClusterStatusController {
     }
 
     /**
-     * Obtiene el estado actual del clúster desde el store en memoria.
+     * Obtiene el estado actual del clúster desde la cache de Mongo.
      *
      * <p>Responde con un payload estándar ({@code ResponseApi}) que incluye metadatos
      * y un DTO con {@code active} y {@code pollingIntervalSeconds}.</p>

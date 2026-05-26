@@ -15,7 +15,7 @@
     <artifactId>cluster-status-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cluster-status-service</name>
-    <description>Microservice that exposes cluster status from an in-memory store.</description>
+    <description>Microservice that exposes cluster status from a MongoDB cache.</description>
 
     <properties>
         <java.version>21</java.version>
@@ -25,6 +25,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
         <dependency>
             <groupId>io.swagger</groupId>

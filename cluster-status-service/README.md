@@ -1,6 +1,6 @@
 # Cluster Status Service
 
-Microservicio Spring Boot para exponer el estado actual del cluster desde un store en memoria.
+Microservicio Spring Boot para exponer el estado actual del cluster desde una cache en MongoDB.
 
 ## Stack
 
@@ -12,6 +12,27 @@ Microservicio Spring Boot para exponer el estado actual del cluster desde un sto
 
 ```bash
 mvn spring-boot:run
+```
+
+Por defecto intenta conectarse a `mongodb://localhost:27017/multi-clusters`. Se puede cambiar con:
+
+```bash
+MONGODB_URI=mongodb://user:password@host:27017/multi-clusters mvn spring-boot:run
+```
+
+## Cache MongoDB
+
+El endpoint lee la coleccion `cluster_status_cache` y toma el documento mas reciente para el `cluster.data-center` configurado.
+
+Documento esperado:
+
+```json
+{
+  "dataCenter": "default",
+  "active": true,
+  "pollingIntervalSeconds": 30,
+  "updatedAt": "2026-05-26T00:00:00Z"
+}
 ```
 
 ## Endpoint
