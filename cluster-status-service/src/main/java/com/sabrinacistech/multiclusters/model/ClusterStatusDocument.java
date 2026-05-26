@@ -4,8 +4,8 @@ import java.time.Instant;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "cluster_status_cache")
-public class ClusterStatusCacheDocument {
+@Document(collection = "cluster_status")
+public class ClusterStatusDocument {
 
     @Id
     private String id;

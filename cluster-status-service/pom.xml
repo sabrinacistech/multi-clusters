@@ -15,7 +15,7 @@
     <artifactId>cluster-status-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cluster-status-service</name>
-    <description>Microservice that exposes cluster status from a MongoDB cache.</description>
+    <description>Microservice that exposes cluster status from a MongoDB database.</description>
 
     <properties>
         <java.version>21</java.version>

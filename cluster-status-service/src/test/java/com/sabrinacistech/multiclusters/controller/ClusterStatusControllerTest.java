@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.sabrinacistech.multiclusters.ClusterStatusServiceApplication;
-import com.sabrinacistech.multiclusters.model.ClusterStatusCacheDocument;
-import com.sabrinacistech.multiclusters.repository.ClusterStatusCacheRepository;
+import com.sabrinacistech.multiclusters.model.ClusterStatusDocument;
+import com.sabrinacistech.multiclusters.repository.ClusterStatusRepository;
 import java.time.Instant;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,23 +33,23 @@ class ClusterStatusControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ClusterStatusCacheRepository repository;
+    private ClusterStatusRepository repository;
 
     @BeforeEach
     void setUp() {
-        ClusterStatusCacheDocument cache = new ClusterStatusCacheDocument();
-        cache.setId("default-cache");
-        cache.setDataCenter("default");
-        cache.setActive(false);
-        cache.setPollingIntervalSeconds(45);
-        cache.setUpdatedAt(Instant.parse("2026-05-26T00:00:00Z"));
+        ClusterStatusDocument status = new ClusterStatusDocument();
+        status.setId("default-status");
+        status.setDataCenter("default");
+        status.setActive(false);
+        status.setPollingIntervalSeconds(45);
+        status.setUpdatedAt(Instant.parse("2026-05-26T00:00:00Z"));
 
         when(repository.findFirstByDataCenterOrderByUpdatedAtDesc("default"))
-            .thenReturn(Optional.of(cache));
+            .thenReturn(Optional.of(status));
     }
 
     @Test
-    void getClusterStatusReturnsCurrentMongoCacheStatus() throws Exception {
+    void getClusterStatusReturnsCurrentMongoStatus() throws Exception {
         mockMvc.perform(get("/get-cluster-status")
                 .header("APP-NAME", "consumer-api")
                 .header("PROJECT-NAME", "multi-clusters")
