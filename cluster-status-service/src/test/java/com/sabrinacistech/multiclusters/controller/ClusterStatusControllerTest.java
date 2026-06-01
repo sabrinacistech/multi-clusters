@@ -50,15 +50,10 @@ class ClusterStatusControllerTest {
 
     @Test
     void getClusterStatusReturnsCurrentMongoStatus() throws Exception {
-        mockMvc.perform(get("/get-cluster-status")
-                .header("APP-NAME", "consumer-api")
-                .header("PROJECT-NAME", "multi-clusters")
-                .header("CLIENT-CLUSTER-ACTIVE", "true"))
+        mockMvc.perform(get("/get-cluster-status"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.success", is(true)))
-            .andExpect(jsonPath("$.metadata.appName", is("consumer-api")))
-            .andExpect(jsonPath("$.metadata.projectName", is("multi-clusters")))
-            .andExpect(jsonPath("$.metadata.clientClusterActive", is("true")))
+            .andExpect(jsonPath("$.meta.method", is("GET")))
+            .andExpect(jsonPath("$.meta.operation", is("/get-cluster-status")))
             .andExpect(jsonPath("$.data.active", is(false)))
             .andExpect(jsonPath("$.data.pollingIntervalSeconds", is(45)));
     }

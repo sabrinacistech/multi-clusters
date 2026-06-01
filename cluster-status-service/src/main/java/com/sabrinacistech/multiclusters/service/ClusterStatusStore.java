@@ -1,7 +1,7 @@
 package com.sabrinacistech.multiclusters.service;
 
 import com.sabrinacistech.multiclusters.config.ClusterConfigProperties;
-import com.sabrinacistech.multiclusters.dto.ClusterStatusDto;
+import com.sabrinacistech.multiclusters.openapi.model.ClusterStatusIsActiveDTO;
 import com.sabrinacistech.multiclusters.repository.ClusterStatusRepository;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +19,13 @@ public class ClusterStatusStore {
         this.repository = repository;
     }
 
-    public ClusterStatusDto getCurrentStatus() {
+    public ClusterStatusIsActiveDTO getCurrentStatus() {
         return repository.findFirstByDataCenterOrderByUpdatedAtDesc(configProps.getDataCenter())
-            .map(status -> new ClusterStatusDto(status.isActive(), status.getPollingIntervalSeconds()))
-            .orElseGet(() -> new ClusterStatusDto(configProps.isActive(), configProps.getPollingIntervalSeconds()));
+            .map(status -> new ClusterStatusIsActiveDTO()
+                .active(status.isActive())
+                .pollingIntervalSeconds(status.getPollingIntervalSeconds()))
+            .orElseGet(() -> new ClusterStatusIsActiveDTO()
+                .active(configProps.isActive())
+                .pollingIntervalSeconds(configProps.getPollingIntervalSeconds()));
     }
 }
