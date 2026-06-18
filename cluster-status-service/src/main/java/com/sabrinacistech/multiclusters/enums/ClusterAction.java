@@ -1,4 +1,4 @@
-package com.sabrinacistech.multiclusters.service;
+package com.sabrinacistech.multiclusters.enums;
 
 /**
  * Acciones técnicas ejecutadas por el servicio.

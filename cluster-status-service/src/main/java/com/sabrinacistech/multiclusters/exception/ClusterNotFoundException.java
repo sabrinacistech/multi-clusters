@@ -1,4 +1,6 @@
-package com.sabrinacistech.multiclusters.service;
+package com.sabrinacistech.multiclusters.exception;
+
+import com.sabrinacistech.multiclusters.enums.ClusterExceptionMessage;
 
 /**
  * Excepción de dominio que indica que no existe un clúster para el alias configurado.

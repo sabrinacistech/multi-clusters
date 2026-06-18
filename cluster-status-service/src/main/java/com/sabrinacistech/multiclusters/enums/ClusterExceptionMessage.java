@@ -1,4 +1,4 @@
-package com.sabrinacistech.multiclusters.service;
+package com.sabrinacistech.multiclusters.enums;
 
 
 public enum ClusterExceptionMessage {

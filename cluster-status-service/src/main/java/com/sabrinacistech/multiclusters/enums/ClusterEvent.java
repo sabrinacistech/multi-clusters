@@ -1,4 +1,4 @@
-package com.sabrinacistech.multiclusters.service;
+package com.sabrinacistech.multiclusters.enums;
 
 /**
  * Eventos principales del ciclo de vida del monitoreo.
