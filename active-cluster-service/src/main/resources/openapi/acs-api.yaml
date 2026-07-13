@@ -1,0 +1,204 @@
+openapi: 3.0.2
+info:
+  title: active-cluster-service
+  description: PaaS Active Cluster Service (READER)
+  version: 1.0.0-SNAPSHOT
+servers:
+  - url: /v1/pass/arqs/cluster-availability-service
+    description: Base path del servicio
+tags:
+  - name: ClusterState
+    description: Operaciones de estado de cluster
+paths:
+  /v1/pass/arqs/cluster-availability-service/get-cluster-status:
+    get:
+      tags:
+        - ClusterState
+      summary: Obtiene el estado del cluster para la aplicacion consultante
+      operationId: getClusterStatus
+      parameters:
+        - name: APP-NAME
+          in: header
+          required: false
+          schema:
+            type: string
+            default: Unknown-App-Name
+        - name: PROJECT-NAME
+          in: header
+          required: false
+          schema:
+            type: string
+            default: Unknown-Project-Name
+        - name: CLIENT-CLUSTER-ACTIVE
+          in: header
+          required: false
+          schema:
+            type: string
+            default: Unknown-Reported-Cluster
+        - name: ENVIRONMENT
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Estado del cluster obtenido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterStatusResponse'
+        '400':
+          description: Parametros invalidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Estado no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/pass/arqs/cluster-availability-service/inicial:
+    post:
+      tags:
+        - ClusterState
+      summary: Registro inicial del estado de cluster
+      operationId: registerInitial
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterStateDTO'
+      responses:
+        '200':
+          description: Estado registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterStateResponse'
+  /v1/pass/arqs/cluster-availability-service/create:
+    post:
+      tags:
+        - ClusterState
+      summary: Crea un estado de cluster
+      operationId: createClusterState
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterStateDTO'
+      responses:
+        '200':
+          description: Estado creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterStateResponse'
+  /v1/pass/arqs/cluster-availability-service/update:
+    put:
+      tags:
+        - ClusterState
+      summary: Actualiza un estado de cluster
+      operationId: updateClusterState
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterStateDTO'
+      responses:
+        '200':
+          description: Estado actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterStateResponse'
+components:
+  schemas:
+    Meta:
+      type: object
+      properties:
+        method:
+          type: string
+        operation:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    ClusterStatusDTO:
+      type: object
+      properties:
+        active:
+          type: boolean
+        pollingIntervalSeconds:
+          type: integer
+          format: int32
+    ClusterStateDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        application:
+          type: string
+        project:
+          type: string
+        environment:
+          type: string
+        activeCluster:
+          type: string
+        active:
+          type: boolean
+        pollingIntervalSeconds:
+          type: integer
+          format: int32
+        updatedBy:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        reason:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+    ClusterStatusResponse:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/Meta'
+        data:
+          $ref: '#/components/schemas/ClusterStatusDTO'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    ClusterStateResponse:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/Meta'
+        data:
+          $ref: '#/components/schemas/ClusterStateDTO'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    ErrorResponse:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/Meta'
+        data:
+          type: object
+          nullable: true
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'

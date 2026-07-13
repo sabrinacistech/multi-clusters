@@ -1,0 +1,28 @@
+# HPA para la capa ABM (API REST). Requiere ShedLock habilitado para que el
+# scheduler siga corriendo en una sola replica logica aunque haya varios pods.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: cluster-status-monitor
+  labels:
+    app: cluster-status-monitor
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: cluster-status-monitor
+  minReplicas: 1
+  maxReplicas: 4
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: acs-configmap
+  labels:
+    app: active-cluster-service
+data:
+  SPRING_PROFILES_ACTIVE: "prd"
+  ACS_DEFAULT_ENVIRONMENT: "prd"
+  CACHE_TTL_SECONDS: "30"

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-status-monitor-config
+  labels:
+    app: cluster-status-monitor
+data:
+  SPRING_PROFILES_ACTIVE: "prd"
+  CSM_SCHEDULER_ENABLED: "true"
+  CSM_SCHEDULER_FIXED_DELAY: "30000"
+  CSM_SCHEDULER_INITIAL_DELAY: "10000"
+  CSM_PROBE_TIMEOUT_MS: "3000"
+  CSM_PROBE_MAX_RETRIES: "2"
+  CSM_PROBE_RETRY_BACKOFF_MS: "500"
+  CSM_MANUAL_GRACE_SECONDS: "300"
+  CACHE_TTL_SECONDS: "30"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318/v1/traces"

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cluster-status-monitor
+  labels:
+    app: cluster-status-monitor
+    tier: writer
+spec:
+  # IMPORTANTE: el scheduler debe correr con UNA sola replica activa.
+  # Con >1 replica usar ShedLock (lock distribuido en Mongo) para garantizar
+  # que solo un pod ejecute pollAllClusters() por ciclo. El ABM (API REST)
+  # puede escalar horizontalmente mediante el HPA (ver csm-hpa.yaml) siempre
+  # que ShedLock este habilitado.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cluster-status-monitor
+  template:
+    metadata:
+      labels:
+        app: cluster-status-monitor
+        tier: writer
+    spec:
+      containers:
+        - name: cluster-status-monitor
+          image: image-registry.openshift-image-registry.svc:5000/paas/cluster-status-monitor:latest
+          ports:
+            - containerPort: 8081
+              name: http
+          envFrom:
+            - configMapRef:
+                name: cluster-status-monitor-config
+            - secretRef:
+                name: cluster-status-monitor-secret
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            initialDelaySeconds: 20
+            periodSeconds: 10

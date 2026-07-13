@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cluster-status-monitor
+  labels:
+    app: cluster-status-monitor
+spec:
+  podSelector:
+    matchLabels:
+      app: cluster-status-monitor
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Permitir trafico HTTP desde el router de OpenShift y desde Prometheus.
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              policy-group.network.openshift.io/ingress: ""
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: monitoring
+      ports:
+        - protocol: TCP
+          port: 8081
+  egress:
+    # Permitir DNS y salida hacia Mongo y los endpoints de health de los clusteres.
+    - ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 27017
+        - protocol: TCP
+          port: 443

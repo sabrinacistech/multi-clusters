@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: active-cluster-service
+  labels:
+    app: active-cluster-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: active-cluster-service
+  template:
+    metadata:
+      labels:
+        app: active-cluster-service
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: active-cluster-service
+                topologyKey: topology.kubernetes.io/zone
+      containers:
+        - name: active-cluster-service
+          image: active-cluster-service:1.0.0-SNAPSHOT
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: acs-configmap
+                  key: SPRING_PROFILES_ACTIVE
+            - name: ACS_DEFAULT_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: acs-configmap
+                  key: ACS_DEFAULT_ENVIRONMENT
+            - name: CACHE_TTL_SECONDS
+              valueFrom:
+                configMapKeyRef:
+                  name: acs-configmap
+                  key: CACHE_TTL_SECONDS
+            - name: SPRING_THREADS_VIRTUAL_ENABLED
+              value: "true"
+            - name: MONGO_URI_SHARED
+              valueFrom:
+                secretKeyRef:
+                  name: acs-secret
+                  key: MONGO_URI_SHARED
+            - name: MONGO_URI_CACHE
+              valueFrom:
+                secretKeyRef:
+                  name: acs-secret
+                  key: MONGO_URI_CACHE
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 5

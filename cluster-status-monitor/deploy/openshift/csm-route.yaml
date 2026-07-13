@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: cluster-status-monitor
+  labels:
+    app: cluster-status-monitor
+spec:
+  to:
+    kind: Service
+    name: cluster-status-monitor
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

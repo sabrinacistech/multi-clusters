@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: active-cluster-service
+  labels:
+    app: active-cluster-service
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: active-cluster-service

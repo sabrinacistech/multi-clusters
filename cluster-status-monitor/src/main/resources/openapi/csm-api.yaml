@@ -1,0 +1,345 @@
+openapi: 3.0.2
+info:
+  title: Cluster Status Monitor API
+  description: PaaS Cluster Status Monitor (WRITER) - ABM y monitoreo de estado de clusteres.
+  version: 1.0.0
+servers:
+  - url: /api/v1
+tags:
+  - name: cluster-status
+    description: ABM de estados de cluster
+  - name: alias-status
+    description: ABM de estados de alias
+paths:
+  /cluster-status:
+    get:
+      tags: [cluster-status]
+      operationId: listClusterStatus
+      summary: Lista todos los estados de cluster
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterStatusListEnvelope'
+    post:
+      tags: [cluster-status]
+      operationId: createClusterStatus
+      summary: Crea un estado de cluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterStatusInput'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterStatusEnvelope'
+        '400':
+          description: Payload invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '409':
+          description: Conflicto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '422':
+          description: Regla de negocio violada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+  /cluster-status/{id}:
+    get:
+      tags: [cluster-status]
+      operationId: getClusterStatus
+      summary: Obtiene un estado de cluster por id
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterStatusEnvelope'
+        '404':
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    put:
+      tags: [cluster-status]
+      operationId: updateClusterStatus
+      summary: Actualiza un estado de cluster
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterStatusInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterStatusEnvelope'
+        '404':
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    delete:
+      tags: [cluster-status]
+      operationId: deleteClusterStatus
+      summary: Elimina un estado de cluster
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Eliminado
+        '404':
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+  /alias-status:
+    get:
+      tags: [alias-status]
+      operationId: listAliasStatus
+      summary: Lista todos los estados de alias
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AliasStatusListEnvelope'
+    post:
+      tags: [alias-status]
+      operationId: createAliasStatus
+      summary: Crea un estado de alias
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AliasStatusInput'
+      responses:
+        '201':
+          description: Creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AliasStatusEnvelope'
+        '400':
+          description: Payload invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '409':
+          description: Conflicto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+  /alias-status/{alias}:
+    put:
+      tags: [alias-status]
+      operationId: updateAliasStatus
+      summary: Actualiza un estado de alias
+      parameters:
+        - $ref: '#/components/parameters/AliasParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AliasStatusInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AliasStatusEnvelope'
+        '404':
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    delete:
+      tags: [alias-status]
+      operationId: deleteAliasStatus
+      summary: Elimina un estado de alias
+      parameters:
+        - $ref: '#/components/parameters/AliasParam'
+      responses:
+        '204':
+          description: Eliminado
+        '404':
+          description: No encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+components:
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    AliasParam:
+      name: alias
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    Meta:
+      type: object
+      properties:
+        method:
+          type: string
+        operation:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    ClusterStatusInput:
+      type: object
+      required: [codigo, app, cluster, isActive]
+      properties:
+        codigo:
+          type: string
+        app:
+          type: string
+        cluster:
+          type: string
+        isActive:
+          type: boolean
+        updatedBy:
+          type: string
+          enum: [MANUAL, SCHEDULE]
+    ClusterStatusDTO:
+      allOf:
+        - $ref: '#/components/schemas/ClusterStatusInput'
+        - type: object
+          properties:
+            id:
+              type: string
+            updatedAt:
+              type: string
+              format: date-time
+            lastManualAt:
+              type: string
+              format: date-time
+            version:
+              type: integer
+              format: int64
+    AliasStatusInput:
+      type: object
+      required: [alias, app, cluster, isActive]
+      properties:
+        alias:
+          type: string
+        app:
+          type: string
+        cluster:
+          type: string
+        target:
+          type: string
+        isActive:
+          type: boolean
+    AliasStatusDTO:
+      allOf:
+        - $ref: '#/components/schemas/AliasStatusInput'
+        - type: object
+          properties:
+            id:
+              type: string
+            updatedAt:
+              type: string
+              format: date-time
+    ClusterStatusEnvelope:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/Meta'
+        data:
+          $ref: '#/components/schemas/ClusterStatusDTO'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    ClusterStatusListEnvelope:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/Meta'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterStatusDTO'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    AliasStatusEnvelope:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/Meta'
+        data:
+          $ref: '#/components/schemas/AliasStatusDTO'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    AliasStatusListEnvelope:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/Meta'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AliasStatusDTO'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    ErrorEnvelope:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/Meta'
+        data:
+          nullable: true
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'

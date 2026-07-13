@@ -1,0 +1,47 @@
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 200
+    connection-timeout: 5000ms
+
+spring:
+  application:
+    name: active-cluster-service
+  threads:
+    virtual:
+      enabled: true
+  data:
+    mongodb:
+      uri: ${MONGO_URI_SHARED:mongodb://localhost:27017/acs}
+
+# Configuracion adicional de la base de cache (usada por los adaptadores de solo lectura)
+acs:
+  default-environment: ${ACS_DEFAULT_ENVIRONMENT:dev}
+  cache:
+    mongodb-uri: ${MONGO_URI_CACHE:mongodb://localhost:27017/acs_cache}
+
+cache:
+  ttl-seconds: ${CACHE_TTL_SECONDS:30}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  tracing:
+    enabled: true
+  metrics:
+    tags:
+      application: active-cluster-service
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
